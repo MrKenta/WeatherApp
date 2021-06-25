@@ -8,6 +8,8 @@
 import UIKit
 
 class HistoryVC: UITableViewController {
+    
+    var dataArray = DataManager.shared.readObjects()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,16 +19,16 @@ class HistoryVC: UITableViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.reloadData()
     }
 
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = true
+        dataArray = DataManager.shared.readObjects()
+        tableView.reloadData()
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        navigationController?.navigationBar.isHidden = false
-    }
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -34,7 +36,7 @@ class HistoryVC: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return DataSource.shared.data.count
+        return dataArray.count
     }
 
     
@@ -42,18 +44,36 @@ class HistoryVC: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier:String(describing:WeatherCell.self), for: indexPath)
 
         guard let weatherCell = cell as? WeatherCell else { return cell }
+        weatherCell.setCell(sample:dataArray[indexPath.row])
 
-        weatherCell.setCell(sample:DataSource.shared.data[indexPath.row])
+        
         return weatherCell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let storyboard = UIStoryboard(name:"Main", bundle:nil)
         guard let detailVC = storyboard.instantiateViewController(identifier:String(describing:DetailVC.self)) as? DetailVC else { return }
-        detailVC.index = indexPath.row
         navigationController?.pushViewController(detailVC, animated: true)
+        detailVC.sample = dataArray[indexPath.row]
         
     }
+    
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { _, _, complete in
+            DataManager.shared.removeObject(item:self.dataArray[indexPath.row])
+                self.dataArray.remove(at:indexPath.row)
+                tableView.reloadData()
+                complete(true)
+            }
+            let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        configuration.performsFirstActionWithFullSwipe = true
+        return configuration
+            
+        }
+    }
+    
+    
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -99,4 +119,3 @@ class HistoryVC: UITableViewController {
     }
     */
 
-}

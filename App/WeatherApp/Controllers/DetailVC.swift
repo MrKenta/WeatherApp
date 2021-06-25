@@ -10,9 +10,6 @@ import GoogleMaps
 
 class DetailVC: UIViewController {
     
-    var index:Int?
-    
-
     @IBOutlet weak var requestLabel: UILabel!
     @IBOutlet weak var mapView: GMSMapView!
     @IBOutlet weak var skyLabel: UILabel!
@@ -24,24 +21,27 @@ class DetailVC: UIViewController {
     @IBOutlet weak var windDirecLabel: UILabel!
     @IBOutlet weak var countryLabel: UILabel!
     @IBOutlet weak var exitButton: UIButton!
+    var sample : InfoForUser!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Info"
         mapView.layer.cornerRadius = 10
-        requestLabel.text = "Request from \(DataSource.shared.data[index!].createDate)"
+        requestLabel.text = "Request from \(sample.createDate)"
         setStackLabel()
         setMapParametr()
         setButton()
+        
+        navigationController?.navigationBar.isHidden = false
     }
     
 
     func setMapParametr() {
-        let marker = GMSMarker(position: CLLocationCoordinate2D(latitude:DataSource.shared.data[index!].lat, longitude:DataSource.shared.data[index!].lon))
-        marker.title = "\(DataSource.shared.data[index!].place),\(DataSource.shared.data[index!].country)"
+        let marker = GMSMarker(position: CLLocationCoordinate2D(latitude:sample.lat, longitude:sample.lon))
+        marker.title = sample.country
         marker.map = mapView
         
-        let camera = GMSCameraPosition(latitude:DataSource.shared.data[index!].lat, longitude: DataSource.shared.data[index!].lon, zoom: 15)
+        let camera = GMSCameraPosition(latitude:sample.lat, longitude:sample.lon, zoom: 15)
         mapView.camera = camera
         
     }
@@ -55,23 +55,23 @@ class DetailVC: UIViewController {
     }
     
     func setStackLabel() {
-        skyLabel.text = "Sky: \(DataSource.shared.data[index!].skyState)"
-        if DataSource.shared.data[index!].temperature >= 0 {
-            temLabel.text = "Temperature: +\(DataSource.shared.data[index!].temperature)"
+        skyLabel.text = "Sky: \(sample.skyState)"
+        if sample.temperature >= 0 {
+            temLabel.text = "Temperature: +\(sample.temperature)"
         }else{
-            temLabel.text = "Temperature: -\(DataSource.shared.data[index!].temperature)"
+            temLabel.text = "Temperature: -\(sample.temperature)"
         }
-        if DataSource.shared.data[index!].feelsTemperature >= 0 {
-            feelTemp.text = "Feels like: +\(DataSource.shared.data[index!].feelsTemperature)"
+        if sample.feelsTemperature >= 0 {
+            feelTemp.text = "Feels like: +\(sample.feelsTemperature)"
         }else{
-            feelTemp.text = "Feels like: -\(DataSource.shared.data[index!].feelsTemperature)"
+            feelTemp.text = "Feels like: -\(sample.feelsTemperature)"
         }
-        pressureLabel.text = "Pressure:\(DataSource.shared.data[index!].pressure) nPA"
-        humidtyLabel.text = "Humidty:\(DataSource.shared.data[index!].humidity)%"
+        pressureLabel.text = "Pressure:\(sample.pressure) nPA"
+        humidtyLabel.text = "Humidty:\(sample.humidity)%"
         
-        windSpeedLabel.text = "Wind speep: \(DataSource.shared.data[index!].windSpeed) m/s"
+        windSpeedLabel.text = "Wind speep: \(sample.windSpeed) m/s"
         
-        switch DataSource.shared.data[index!].windDirection {
+        switch sample.windDirection {
         case 0...30:
             windDirecLabel.text = "Wind direction: North Wind"
         case 31...60:
@@ -93,7 +93,7 @@ class DetailVC: UIViewController {
         default:
             break
         }
-        countryLabel.text = "\(DataSource.shared.data[index!].place),\(DataSource.shared.data[index!].country)"
+        countryLabel.text = "\(sample.place),\(sample.country)"
     }
     
     

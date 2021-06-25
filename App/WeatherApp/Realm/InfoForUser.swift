@@ -6,22 +6,23 @@
 //
 
 import Foundation
+import RealmSwift
 
 
-class InfoForUser  {
-     var lat = 0.0
-     var lon = 0.0
-     var sky = ""
-     var skyState = ""
-     var temperature = 0
-     var feelsTemperature  = 0.0
-     var pressure = 0
-     var humidity = 0
-     var windSpeed = 0
-     var windDirection = 0
-     var country = ""
-     var place = ""
-     var createDate = ""
+class InfoForUser : Object  {
+    @objc dynamic var lat = 0.0
+    @objc dynamic var lon = 0.0
+    @objc dynamic var sky = ""
+    @objc dynamic var skyState = ""
+    @objc dynamic var temperature = 0
+    @objc dynamic var feelsTemperature  = 0.0
+    @objc dynamic var pressure = 0
+    @objc dynamic var humidity = 0
+    @objc dynamic var windSpeed = 0
+    @objc dynamic var windDirection = 0
+    @objc dynamic var country = ""
+    @objc dynamic var place = ""
+    @objc dynamic var createDate = ""
     
     
 }
